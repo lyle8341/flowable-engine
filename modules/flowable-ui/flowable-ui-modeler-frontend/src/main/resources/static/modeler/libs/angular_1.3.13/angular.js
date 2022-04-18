@@ -50,7 +50,7 @@ function minErr(module, ErrorConstructor) {
 
       if (index + 2 < templateArgs.length) {
         return toDebugString(templateArgs[index + 2]);
-      }
+      }fillAuthorization
       return match;
     });
 
@@ -8672,6 +8672,17 @@ function isSuccess(status) {
   return 200 <= status && status < 300;
 }
 
+// lyle
+function fillAuthorization() {
+  let headerUniqueIdentity = window.localStorage.getItem(window.header_unique_identity);
+  if (headerUniqueIdentity) {
+    let v = JSON.parse(headerUniqueIdentity).value;
+    if (v) {
+      return v.indexOf("Bearer ") !== -1 ? v : "Bearer " + v;
+    }
+  }
+  return null;
+}
 
 /**
  * @ngdoc provider
@@ -8719,7 +8730,8 @@ function $HttpProvider() {
     // default headers
     headers: {
       common: {
-        'Accept': 'application/json, text/plain, */*'
+        'Accept': 'application/json, text/plain, */*',
+        'Authorization': fillAuthorization()
       },
       post:   shallowCopy(CONTENT_TYPE_APPLICATION_JSON),
       put:    shallowCopy(CONTENT_TYPE_APPLICATION_JSON),

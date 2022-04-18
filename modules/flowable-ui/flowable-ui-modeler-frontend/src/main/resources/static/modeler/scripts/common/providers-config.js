@@ -31,6 +31,8 @@ flowableModule.factory('NotPermittedInterceptor', [ '$q', '$window', function($q
     }
 }]);
 
+window.header_unique_identity = 'token'
+
 flowableModule.config(['$httpProvider', function($httpProvider) {
 
     if (!$httpProvider.defaults.headers.get) {
@@ -40,7 +42,15 @@ flowableModule.config(['$httpProvider', function($httpProvider) {
     $httpProvider.defaults.headers.get['Cache-Control'] = 'no-cache, no-store, must-revalidate';
     $httpProvider.defaults.headers.get['Pragma'] = 'no-cache';
     $httpProvider.defaults.headers.get['Expires'] = '0';
-
+    // lyle-------------------
+    const headerUniqueIdentity = window.localStorage.getItem(window.header_unique_identity);
+    if (headerUniqueIdentity) {
+        let v = JSON.parse(headerUniqueIdentity).value;
+        if(v){
+            $httpProvider.defaults.headers.get['Authorization'] = v.indexOf("Bearer ") !== -1 ? v : "Bearer " + v;
+        }
+    }
+    // -------------------
     $httpProvider.interceptors.push('NotPermittedInterceptor');
 
 }]);

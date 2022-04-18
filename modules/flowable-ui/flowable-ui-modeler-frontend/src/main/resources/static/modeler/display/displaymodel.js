@@ -234,7 +234,18 @@ if (modelType == 'runtime') {
     modelUrl = FLOWABLE.APP_URL.getProcessDefinitionModelJsonUrl(processDefinitionId);
 }
 
+// lyle
+const headerUniqueIdentity = window.localStorage.getItem(window.header_unique_identity);
+const headers = {}
+if (headerUniqueIdentity) {
+    let v = JSON.parse(headerUniqueIdentity).value;
+    if(v){
+        headers['Authorization'] = v.indexOf("Bearer ") !== -1 ? v : "Bearer " + v;
+    }
+}
+
 var request = jQuery.ajax({
+    headers,
     type: 'get',
     url: modelUrl + '?nocaching=' + new Date().getTime()
 });

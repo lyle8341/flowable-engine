@@ -126,7 +126,8 @@
 <script src="libs/jquery_1.11.0/jquery.min.js"></script>
 <script src="libs/jquery-ui-1.10.3.custom.min.js"></script>
 
-<script src="libs/angular_1.3.13/angular.min.js"></script>
+<!--<script src="libs/angular_1.3.13/angular.min.js"></script>-->
+<script src="libs/angular_1.3.13/angular.js"></script>
 <script src="libs/angular-animate_1.3.13/angular-animate.min.js"></script>
 <script src="libs/bootstrap_3.1.1/js/bootstrap.min.js"></script>
 <script src="libs/angular-resource_1.3.13/angular-resource.min.js"></script>
@@ -283,5 +284,77 @@
 <!-- Integration extensions -->
 <script src="scripts/resource-loader.js?v=2" app="editor"></script>
 
+<script>
+    const _token = getUrlParam(window.header_unique_identity)
+    handleLocalStorage('set', window.header_unique_identity, _token)
+
+    function getUrlParam(name) {
+        if (typeof name !== 'string') {
+            return null;
+        }
+        const $search = window.location.search;
+        const $hash = window.location.hash;
+        const reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        let r = null;
+        if ($search !== '') {
+            r = $search.substr(1).match(reg);
+        }
+        if ($hash !== '' && r === null) {
+            if ($hash.indexOf('?') > 0) {
+                r = $hash.split("?")[1].match(reg);
+            }
+            if ($hash.indexOf('?') < 0 && $hash.indexOf('&') > 0) {
+                r = $hash.substr($hash.indexOf('&')).match(reg);
+            }
+        }
+        return r !== null ? unescape(r[2]) : null;
+    }
+
+    function customLocalStorage_set (key, value, ttl_ms) {
+        const data = {value: value, expires: new Date().getTime() + ttl_ms};
+        window.localStorage.setItem(key, JSON.stringify(data))
+    }
+
+    function customLocalStorage_get (key) {
+        const data = JSON.parse(window.localStorage.getItem(key))
+        if (data) {
+            if (data.expires && data.expires < new Date().getTime()) {
+                window.localStorage.removeItem(key);
+            } else {
+                return data.value;
+            }
+        }
+        return null;
+    }
+
+    function handleLocalStorage(method, key, value){
+        switch (method) {
+            case 'get' : {
+                let temp = customLocalStorage_get(key)
+                if (temp) {
+                    return temp
+                } else {
+                    return false
+                }
+            }
+            case 'set' : {
+                if (value) {
+                    // 有效时间1小时
+                    customLocalStorage_set(key, value, 3600000)
+                }
+                break
+            }
+            case 'remove' : {
+                if (key) {
+                    window.localStorage.removeItem(key)
+                }
+                break
+            }
+            default : {
+                return false
+            }
+        }
+    }
+</script>
 </body>
 </html>
