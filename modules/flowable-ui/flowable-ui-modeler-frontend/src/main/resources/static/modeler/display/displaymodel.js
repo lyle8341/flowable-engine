@@ -235,8 +235,8 @@ if (modelType == 'runtime') {
 }
 
 // lyle
-const _headerUniqueIdentity = window.localStorage.getItem(window.header_unique_identity);
-const headers = {}
+var _headerUniqueIdentity = window.localStorage.getItem(window.header_unique_identity);
+var headers = {}
 if (_headerUniqueIdentity) {
     let v = JSON.parse(_headerUniqueIdentity).value;
     if(v){
