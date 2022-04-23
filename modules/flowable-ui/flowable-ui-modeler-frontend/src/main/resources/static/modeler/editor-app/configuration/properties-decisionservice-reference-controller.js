@@ -109,6 +109,18 @@ angular.module('flowableModeler').controller('FlowableDecisionServiceReferencePo
                     lastUpdated: modelMetaData.lastUpdated
                 };
 
+                // lyle
+                function fillAuthorization() {
+                    let headerUniqueIdentity = window.localStorage.getItem(window.header_unique_identity);
+                    if (headerUniqueIdentity) {
+                        let v = JSON.parse(headerUniqueIdentity).value;
+                        if (v) {
+                            return v.indexOf("Bearer ") !== -1 ? v : "Bearer " + v;
+                        }
+                    }
+                    return null;
+                }
+
                 // Update
                 $http({
                     method: 'POST',
@@ -116,7 +128,8 @@ angular.module('flowableModeler').controller('FlowableDecisionServiceReferencePo
                     ignoreErrors: true,
                     headers: {
                         'Accept': 'application/json',
-                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                        'Authorization': fillAuthorization()
                     },
                     transformRequest: function (obj) {
 	                    var str = [];

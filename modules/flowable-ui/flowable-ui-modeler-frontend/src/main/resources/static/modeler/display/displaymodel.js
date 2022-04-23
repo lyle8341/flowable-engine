@@ -235,10 +235,10 @@ if (modelType == 'runtime') {
 }
 
 // lyle
-const headerUniqueIdentity = window.localStorage.getItem(window.header_unique_identity);
+const _headerUniqueIdentity = window.localStorage.getItem(window.header_unique_identity);
 const headers = {}
-if (headerUniqueIdentity) {
-    let v = JSON.parse(headerUniqueIdentity).value;
+if (_headerUniqueIdentity) {
+    let v = JSON.parse(_headerUniqueIdentity).value;
     if(v){
         headers['Authorization'] = v.indexOf("Bearer ") !== -1 ? v : "Bearer " + v;
     }
